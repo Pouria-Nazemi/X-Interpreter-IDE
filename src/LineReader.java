@@ -73,7 +73,16 @@ public class LineReader {
                     } else {
                         throw new RuntimeException("Wrong format of float declaration" + "At line: " + this.getLinePointer());
                     }
-                } else {
+                }else if (parts.length == 5){
+                    if (parts[1].equals("=") && parts[3].equals("+")){
+
+                    }
+                }
+
+
+
+
+                else {
                     throw new RuntimeException("Wrong format of variable declaration" + "At line: " + this.getLinePointer());
                 }
             } else {
