@@ -5,30 +5,21 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        new LineReader("int x = 10\n"
-                + "int y = 15\n"
-                + "int m = 250\n"
-                + "int p\n"
-                + "int o\n"
-                + "float er\n"
-                + "float jh = 100.05\n"
-                + "float kj = 55\n"
-                + "float lk  = 0.255\n"
-                + "%%");
+        new LineReader(
+                "int x = 10\n"
+                + "int y = 30\n"
+                + "int z\n"
+                + "int w = 50\n"
+                + "int sum\n"
+                + "%%\n"
+                + "sum = y + x \n"
+                + "sum = sum + z\n"
+                + "sum = sum + w\n"
+                + "sum = w\n"
+                + "print sum\n");
 
-        System.out.println(Number.getVariables());
-        
-        /*test code*/
-        if (Number.getVariables().get("x") instanceof Integer) {
-            System.out.println("Integer");
-            Number.setVariablesElement("y", Number.getVariables().get("x").intValue() + 5);
-            System.out.println(Number.getVariables().get("y"));
-        }
-        else if (Number.getVariables().get("x") instanceof Float) {
-            System.out.println("Float");
-            Number.setVariablesElement("y", Number.getVariables().get("x").floatValue() + 5);
-            System.out.println(Number.getVariables().get("y"));
-        }
+        //System.out.println(Numbers.getVariables());
+
 
     }
 

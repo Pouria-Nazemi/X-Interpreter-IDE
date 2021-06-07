@@ -1,5 +1,5 @@
 
-public class FloaT extends Number{
+public class FloaT extends Numbers{
 
     public FloaT(String name, float value) {
         super(name,value);

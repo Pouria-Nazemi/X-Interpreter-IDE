@@ -1,5 +1,5 @@
 
-public class Int extends Number{
+public class Int extends Numbers{
      
     public Int(String name, int value) {
         super(name,value);
