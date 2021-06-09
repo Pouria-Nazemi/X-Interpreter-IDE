@@ -1,10 +1,6 @@
 
 public abstract class Statement implements Runnable {
 
-    public Statement() {
-
-    }
-
     public Number variableGetValue(String var) {
         try {
             int variable = Integer.parseInt(var);

@@ -15,12 +15,21 @@ public class Main {
                 + "sum = y + x \n"
                 + "sum = sum + z\n"
                 + "sum = sum + w\n"
-                + "sum = w\n"
-                + "print sum\n");
+                + "for 3\n"
+                + "for 2\n"
+                + "for 4\n"
+                + "sum = sum + 1\n"
+                + "print sum\n"
+                + "end for\n"
+                + "print 10\n"
+                + "end for\n"
+                + "end for\n"
+                + "for 5\n"
+                +"print w\n"
+                + "end for\n"
+        );
 
         //System.out.println(Numbers.getVariables());
-
-
     }
 
 }

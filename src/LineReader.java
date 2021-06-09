@@ -13,6 +13,11 @@ public class LineReader {
 
     private static int linePointer = 0;
     private ArrayList<Statement> commands = new ArrayList<>();
+    private boolean forAlert = false;
+    private int forInFor = 0;
+    private ArrayList<Statement> commandsOfFor = new ArrayList<>();
+    private int tedadFor = 0;
+    //private int i = 0;
 
     public LineReader(String code) {
         try {
@@ -32,10 +37,11 @@ public class LineReader {
             if (line != null && line.equals("%%")) {
                 //TODO calling statementReader function
                 statementReader(code);
+                runCommands();
                 break;//End of variable declaration part
             }
 
-            String[] parts = line.split("[ ]+");
+            String[] parts = line.trim().split("[ ]+");
 
             if (!Numbers.getVariables().containsKey(parts[1]) && parts[1].matches("([a-zA-Z$][\\w$]*|[_][\\w$]+)")) {/*
                     Check the name of new variable not to be reapeted and if it matches java format of variable name decleration
@@ -73,16 +79,11 @@ public class LineReader {
                     } else {
                         throw new RuntimeException("Wrong format of float declaration" + "At line: " + this.getLinePointer());
                     }
-                }else if (parts.length == 5){
-                    if (parts[1].equals("=") && parts[3].equals("+")){
+                } else if (parts.length == 5) {
+                    if (parts[1].equals("=") && parts[3].equals("+")) {
 
                     }
-                }
-
-
-
-
-                else {
+                } else {
                     throw new RuntimeException("Wrong format of variable declaration" + "At line: " + this.getLinePointer());
                 }
             } else {
@@ -97,8 +98,9 @@ public class LineReader {
         while (code.hasNextLine()) {
             this.linePointer++;
             String line = code.nextLine();
-            String[] parts = line.split("[ ]+");
+            String[] parts = line.trim().split("[ ]+");
             Statement command = null;
+            String forCommand = "";
             switch (parts[0]) {
                 case "print":
                     if (parts.length == 2) {
@@ -108,30 +110,107 @@ public class LineReader {
                     }
                     break;
                 case "for": {
-                    //code.nextLine();
-                    //while()
+                    int i = 1;
+                    if (parts.length == 2) {
+                        if (this.forInFor == 0) {
+                            //i = 1;
+                            this.tedadFor = 1;
+                        }
+                        //commands.add(new For(parts[1]));
+                        //forAlert = true;
+                        while (code.hasNextLine()) {
+                            String lines = code.nextLine();
+                            if (lines.startsWith("for")) {
+                                i++;
+                                if (this.forAlert==false ) {
+                                    this.tedadFor++;
+                                }
+                                
+                                this.forInFor += 1;
+                            }
+                            if (lines.equals("end for")) {
+                                if (i == 1) {
+                                    break;
+                                }
+                                i--;
+                                //commands.add(new For(parts[1]/*, this.commandsOfFor*/));
+
+                                //forAlert = false;
+                            }
+                            forCommand += lines + "\n";
+                        }
+                        forAlert = true;
+                        Scanner forCommands = new Scanner(forCommand);
+                        this.statementReader(forCommands);
+                        if (this.tedadFor == 1) {
+                            commands.add(new For(parts[1], this.commandsOfFor));
+                            this.tedadFor--;
+                            this.forInFor = 0;
+                            this.commandsOfFor.clear();
+                        } else {
+                            command = new For(parts[1], this.commandsOfFor);
+                            this.commandsOfFor.clear();
+                            this.commandsOfFor.add(command);
+                            if (this.tedadFor == 1) {
+                                this.forInFor = 0;
+                            }
+                            this.tedadFor--;
+                            command = null;
+
+                        }
+                        if (this.tedadFor == 0) {
+                            forAlert = false;
+                        }
+
+                        break;
+                    } else {
+                        throw new RuntimeException("Invalid for command " + "At line: " + this.getLinePointer());
+                    }
                 }
                 default: {
                     if (Numbers.getVariables().containsKey(parts[0])) {
                         if (parts[1].equals("=")) {
                             if (parts.length == 5) {
-                                command = new Assignment(parts[0], parts[2], parts[3], parts[4]);
+                                command = (new Assignment(parts[0], parts[2], parts[3], parts[4]));
                             } else if (parts.length == 3) {
-                                command = new Assignment(parts[0], parts[2]);
+                                command = (new Assignment(parts[0], parts[2]));
                             } else {
                                 throw new RuntimeException("Invalid assignment command " + "At line: " + this.getLinePointer());
                             }
                         }
-                    } else {
-                        throw new RuntimeException("Invalid command " + "At line: " + this.getLinePointer());
                     }
+                    /*else {
+                        throw new RuntimeException("Invalid command " + "At line: " + this.getLinePointer());
+                    }*/
                 }
             }
-            Number a = command.run();
+            if (!this.forAlert) {
+                if (command != null) {
+                    this.commands.add(command);
+                }
+                //this.commands.add(command);
+                if (this.commands.size() != 0) {
+                    for (int j = 0; j < this.commands.size(); j++) {
+                        this.commands.get(j).run();
+                        this.commands.remove(j);
+                    }
+                }
+                //Number a = command.run();
+            } else {
+                if (command != null) {
+                    this.commandsOfFor.add(command);
+                }
+            }
             /*System.out.println(a);
             System.out.println(Numbers.getVariables());
             System.out.println("line: " + this.getLinePointer() );*/
         }
+    }
+
+    public void runCommands() {
+        /*for (int i = 0; i < this.commands.size() && this.commands.size() != 0; i++) {
+            this.commands.get(i).run();
+        }*/
     }
 
     public static int getLinePointer() {
