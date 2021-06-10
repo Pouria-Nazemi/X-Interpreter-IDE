@@ -25,11 +25,9 @@ public class Main {
                 + "end for\n"
                 + "end for\n"
                 + "for 5\n"
-                +"print w\n"
+                + "print w\n"
                 + "end for\n"
         );
-
-        //System.out.println(Numbers.getVariables());
     }
 
 }

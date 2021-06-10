@@ -1,9 +1,5 @@
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +13,6 @@ public class LineReader {
     private int forInFor = 0;
     private ArrayList<Statement> commandsOfFor = new ArrayList<>();
     private int tedadFor = 0;
-    //private int i = 0;
 
     public LineReader(String code) {
         try {
@@ -28,16 +23,12 @@ public class LineReader {
     }
 
     public void variableDeclaration(String codes) throws IOException {
-        //BufferedReader code = new BufferedReader(new StringReader(codes));
         Scanner code = new Scanner(codes);
-        while (code.hasNext()/*code.readLine()!= null*/) {
+        while (code.hasNext()) {
             this.linePointer++;
-            //String line = code.readLine();
             String line = code.nextLine();
             if (line != null && line.equals("%%")) {
-                //TODO calling statementReader function
                 statementReader(code);
-                runCommands();
                 break;//End of variable declaration part
             }
 
@@ -113,11 +104,8 @@ public class LineReader {
                     int i = 1;
                     if (parts.length == 2) {
                         if (this.forInFor == 0) {
-                            //i = 1;
                             this.tedadFor = 1;
                         }
-                        //commands.add(new For(parts[1]));
-                        //forAlert = true;
                         while (code.hasNextLine()) {
                             String lines = code.nextLine();
                             if (lines.startsWith("for")) {
@@ -133,9 +121,6 @@ public class LineReader {
                                     break;
                                 }
                                 i--;
-                                //commands.add(new For(parts[1]/*, this.commandsOfFor*/));
-
-                                //forAlert = false;
                             }
                             forCommand += lines + "\n";
                         }
@@ -190,10 +175,10 @@ public class LineReader {
                 }
                 //this.commands.add(command);
                 if (this.commands.size() != 0) {
-                    for (int j = 0; j < this.commands.size(); j++) {
-                        this.commands.get(j).run();
-                        this.commands.remove(j);
-                    }
+                    //for (int j = 0; j < this.commands.size(); j++) {
+                        this.commands.get(0).run();
+                        this.commands.remove(0);
+                    //}
                 }
                 //Number a = command.run();
             } else {
@@ -205,12 +190,6 @@ public class LineReader {
             System.out.println(Numbers.getVariables());
             System.out.println("line: " + this.getLinePointer() );*/
         }
-    }
-
-    public void runCommands() {
-        /*for (int i = 0; i < this.commands.size() && this.commands.size() != 0; i++) {
-            this.commands.get(i).run();
-        }*/
     }
 
     public static int getLinePointer() {

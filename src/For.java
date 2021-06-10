@@ -38,22 +38,10 @@ public class For extends Statement {
     public Number run() {
         for (int i = 0; i < this.repeatValue; i++) {
             for (int j = 0; j < this.getInForCommands().size() && this.getInForCommands().size() != 0; j++) {
-                Statement command = null;
-                if (this.getInForCommands().get(j) instanceof Assignment) {
-                    Assignment assign = (Assignment) this.getInForCommands().get(j);
-                    if(assign.getExpression().size()==4){
-                        command = new Assignment(assign.getExpression().get(0),assign.getExpression().get(1),assign.getExpression().get(2),assign.getExpression().get(3));
-                    }
-                    else if(assign.getExpression().size()==2){
-                        command = new Assignment(assign.getExpression().get(0),assign.getExpression().get(1));
-                    }
-                } else {
-                    command = this.getInForCommands().get(j);
-                }
-                command.run();
+                this.getInForCommands().get(j).run();
             }
         }
-        return this.getRepeatValue();//TODO change the output later
+        return this.getRepeatValue();
     }
 
 }
