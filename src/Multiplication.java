@@ -3,7 +3,7 @@ public class Multiplication extends Statement {
 
     private Number result;
 
-    public Multiplication(Number a,Number b) {
+    protected Multiplication(Number a,Number b) {
         this.setResult(this.multNumbers(a, b));
     }
 

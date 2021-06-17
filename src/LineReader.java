@@ -8,11 +8,10 @@ import java.util.Scanner;
 public class LineReader {
 
     private static int linePointer = 0;
-    private ArrayList<Statement> commands = new ArrayList<>();
+
     private boolean forAlert = false;
-    private int forInFor = 0;
     private ArrayList<Statement> commandsOfFor = new ArrayList<>();
-    private int tedadFor = 0;
+    private int forCount = 0;
 
     public LineReader(String code) {
         try {
@@ -85,7 +84,6 @@ public class LineReader {
     }
 
     public void statementReader(Scanner code) {
-        //System.out.println(Numbers.getVariables());
         while (code.hasNextLine()) {
             this.linePointer++;
             String line = code.nextLine();
@@ -101,20 +99,18 @@ public class LineReader {
                     }
                     break;
                 case "for": {
-                    int i = 1;
+                    int i = 1; //for finding the correct end for command
                     if (parts.length == 2) {
-                        if (this.forInFor == 0) {
-                            this.tedadFor = 1;
+                        if (this.forAlert == false) {
+                            this.forCount = 1;
                         }
                         while (code.hasNextLine()) {
                             String lines = code.nextLine();
                             if (lines.startsWith("for")) {
                                 i++;
-                                if (this.forAlert==false ) {
-                                    this.tedadFor++;
+                                if (this.forAlert == false) {
+                                    this.forCount++;
                                 }
-                                
-                                this.forInFor += 1;
                             }
                             if (lines.equals("end for")) {
                                 if (i == 1) {
@@ -127,26 +123,20 @@ public class LineReader {
                         forAlert = true;
                         Scanner forCommands = new Scanner(forCommand);
                         this.statementReader(forCommands);
-                        if (this.tedadFor == 1) {
-                            commands.add(new For(parts[1], this.commandsOfFor));
-                            this.tedadFor--;
-                            this.forInFor = 0;
+                        if (this.forCount == 1) {
+                            command = new For(parts[1], this.commandsOfFor);
+                            this.forCount = 0;
                             this.commandsOfFor.clear();
                         } else {
                             command = new For(parts[1], this.commandsOfFor);
                             this.commandsOfFor.clear();
                             this.commandsOfFor.add(command);
-                            if (this.tedadFor == 1) {
-                                this.forInFor = 0;
-                            }
-                            this.tedadFor--;
+                            this.forCount--;
                             command = null;
-
                         }
-                        if (this.tedadFor == 0) {
+                        if (this.forCount == 0) {
                             forAlert = false;
                         }
-
                         break;
                     } else {
                         throw new RuntimeException("Invalid for command " + "At line: " + this.getLinePointer());
@@ -163,32 +153,19 @@ public class LineReader {
                                 throw new RuntimeException("Invalid assignment command " + "At line: " + this.getLinePointer());
                             }
                         }
-                    }
-                    /*else {
+                    } else {
                         throw new RuntimeException("Invalid command " + "At line: " + this.getLinePointer());
-                    }*/
+                    }
                 }
             }
             if (!this.forAlert) {
-                if (command != null) {
-                    this.commands.add(command);
-                }
-                //this.commands.add(command);
-                if (this.commands.size() != 0) {
-                    //for (int j = 0; j < this.commands.size(); j++) {
-                        this.commands.get(0).run();
-                        this.commands.remove(0);
-                    //}
-                }
-                //Number a = command.run();
+                command.run();
             } else {
                 if (command != null) {
                     this.commandsOfFor.add(command);
                 }
             }
-            /*System.out.println(a);
-            System.out.println(Numbers.getVariables());
-            System.out.println("line: " + this.getLinePointer() );*/
+            //System.out.println(this.getLinePointer());
         }
     }
 

@@ -6,7 +6,7 @@ public class Calculation extends Statement {
     private char operator;
     private Statement calcIns = null;
 
-    public Calculation(String var1, String operator, String var2) {
+    protected Calculation(String var1, String operator, String var2) {
         this.setVar1(super.variableGetValue(var1));
         this.setVar2(super.variableGetValue(var2));
         this.setOperator(operator);
@@ -20,11 +20,6 @@ public class Calculation extends Statement {
             calcIns = new Division(this.getVar1(),this.getVar2());
         }
     }
-
-    public Calculation() {
-    }
-    
-    
 
     public void setVar1(Number var1) {
         this.var1 = var1;

@@ -3,7 +3,7 @@ public class Addition extends Statement {
 
     private Number result;
 
-    public Addition(Number a, Number b) {
+    protected Addition(Number a, Number b) {
         this.setResult(this.addNumbers(a, b));
     }
 

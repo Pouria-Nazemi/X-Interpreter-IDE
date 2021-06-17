@@ -3,7 +3,7 @@ public class Division extends Statement {
 
     private Number result;
 
-    public Division(Number a,Number b) {
+    protected Division(Number a,Number b) {
         this.setResult(this.divNumbers(a, b));
     }
 

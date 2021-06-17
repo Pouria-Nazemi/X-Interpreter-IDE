@@ -3,7 +3,7 @@ public class Subtraction extends Statement {
 
     private Number result;
 
-    public Subtraction(Number a,Number b) {
+    protected Subtraction(Number a,Number b) {
         this.setResult(this.subNumbers(a, b));
     }
 

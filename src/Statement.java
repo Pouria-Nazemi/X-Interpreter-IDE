@@ -17,13 +17,10 @@ public abstract class Statement implements Runnable {
                 }
             }
         }
-        throw new RuntimeException("VariableGetValue method problem");
+        throw new RuntimeException("VariableGetValue method problem" + LineReader.getLinePointer());
     }
 
     @Override
     public abstract Number run();
 
-    /*public Statement getCalcIns() {
-        
-    }*/
 }

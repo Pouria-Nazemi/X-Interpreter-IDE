@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
 
         new LineReader(
                 "int x = 10\n"
@@ -15,18 +15,21 @@ public class Main {
                 + "sum = y + x \n"
                 + "sum = sum + z\n"
                 + "sum = sum + w\n"
+                + "for 2\n"
                 + "for 3\n"
                 + "for 2\n"
                 + "for 4\n"
                 + "sum = sum + 1\n"
                 + "print sum\n"
                 + "end for\n"
-                + "print 10\n"
+               /* + "print 10\n"*/
+                + "end for\n"
                 + "end for\n"
                 + "end for\n"
                 + "for 5\n"
                 + "print w\n"
                 + "end for\n"
+                + "print 15\n"
         );
     }
 
