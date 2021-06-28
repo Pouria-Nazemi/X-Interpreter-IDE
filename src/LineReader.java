@@ -93,7 +93,7 @@ public class LineReader {
 
             String[] parts = line.trim().split("[ ]+");
 
-            if (!Numbers.getVariables().containsKey(parts[1]) && parts[1].matches("([a-zA-Z$][\\w$]*|[_][\\w$]+)")) {/*
+            if (varNameValidation(parts[1])) {/*
                     Check the name of new variable not to be repeated and if it matches java format of variable name declaration
                  */
                 if (parts[0].equals("int")) { //Integer declaration
@@ -137,6 +137,15 @@ public class LineReader {
                 throw new RuntimeException("Name of the variable is not accepted " + "At line: " + lineNumber);
 
             }
+        }
+    }
+    public boolean varNameValidation(String name){
+        if(!Numbers.getVariables().containsKey(name) && name.matches("([a-zA-Z$][\\w$]*|[_][\\w$]+)")
+        && !name.equals("for") &&!name.equals("if")&&!name.equals("print")&&!name.equals("end")){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
