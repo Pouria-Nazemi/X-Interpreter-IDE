@@ -6,9 +6,9 @@ public class For extends Statement {
     private ArrayList<Statement> inForCommands = new ArrayList<>();
     private int repeatValue;
 
-    public For(String repeatValue, ArrayList<Statement> commands) {
+    public For(String repeatValue, int lineNumber) {
+        super.setLineNumber(lineNumber);
         this.setRepeatValue(repeatValue);
-        this.setInForCommands(commands);
     }
 
     public ArrayList<Statement> getInForCommands() {
@@ -25,11 +25,11 @@ public class For extends Statement {
 
     public void setRepeatValue(String repeatValue) {
         int repeatTime;
-        try {
-            repeatTime = Integer.parseInt(repeatValue);
+        if (super.variableGetValue(repeatValue, super.getLineNumber()) instanceof Integer) {
+            repeatTime = (int) super.variableGetValue(repeatValue, super.getLineNumber());
             this.repeatValue = repeatTime;
-        } catch (NumberFormatException ex) {
-            throw new RuntimeException("Wrong declaration of repeat value of for command " + "At line: " + LineReader.getLinePointer());
+        } else {
+            throw new RuntimeException("Wrong declaration of repeat value of for command " + "At line: " + super.getLineNumber());
         }
 
     }

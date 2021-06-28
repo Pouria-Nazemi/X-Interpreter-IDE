@@ -1,7 +1,18 @@
 
 public abstract class Statement implements Runnable {
+    
+    protected int lineNumber;
 
-    public Number variableGetValue(String var) {
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+    
+    
+    public static Number variableGetValue(String var,int lineNumber) {
         try {
             int variable = Integer.parseInt(var);
             return variable;
@@ -17,9 +28,9 @@ public abstract class Statement implements Runnable {
                 }
             }
         }
-        throw new RuntimeException("VariableGetValue method problem" + LineReader.getLinePointer());
+        throw new RuntimeException("Wrong variable used " +"At line: " + lineNumber);
     }
-
+    
     @Override
     public abstract Number run();
 

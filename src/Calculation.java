@@ -6,9 +6,10 @@ public class Calculation extends Statement {
     private char operator;
     private Statement calcIns = null;
 
-    protected Calculation(String var1, String operator, String var2) {
-        this.setVar1(super.variableGetValue(var1));
-        this.setVar2(super.variableGetValue(var2));
+    protected Calculation(String var1, String operator, String var2,int lineNumber) {
+        super.setLineNumber(lineNumber);
+        this.setVar1(super.variableGetValue(var1,super.getLineNumber()));
+        this.setVar2(super.variableGetValue(var2,super.getLineNumber()));
         this.setOperator(operator);
         if (this.getOperator() == '+') {
             calcIns = new Addition(this.getVar1(),this.getVar2());
@@ -42,7 +43,7 @@ public class Calculation extends Statement {
         if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("*")) {
             this.operator = operatorChar.charAt(0);
         } else {
-            throw new RuntimeException("Invalid calculation operator " + "At line: " + LineReader.getLinePointer());
+            throw new RuntimeException("Invalid calculation operator " + "At line: " + super.lineNumber);
         }
 
     }
