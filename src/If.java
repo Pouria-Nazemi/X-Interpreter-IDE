@@ -53,9 +53,9 @@ public class If extends Statement {
     }
 
     private boolean checkCondition() {
-        float var1 = super.variableGetValue(this.getFirstValue(),super.getLineNumber()).floatValue();
-        float var2 = super.variableGetValue(this.getSecondValue(),super.getLineNumber()).floatValue();
-        if (this.getCompareOperator().length() == 2) {
+        float var1 = super.variableGetValue(this.getFirstValue(),super.getLineNumber()).floatValue(); //getting the value of variables
+        float var2 = super.variableGetValue(this.getSecondValue(),super.getLineNumber()).floatValue();//getting the value of variables
+        if (this.getCompareOperator().length() == 2) { // check the compare operator and the condition
             switch (this.getCompareOperator()) {
                 case "==":
                     return (var1 == var2);
@@ -67,7 +67,7 @@ public class If extends Statement {
                     return (var1 >= var2);
             }
 
-        } else if (this.getCompareOperator().length() == 1) {
+        } else if (this.getCompareOperator().length() == 1) {// check the compare operator and the condition
             if (this.getCompareOperator().equals("<")) {
                 return (var1 < var2);
             } else if (this.getCompareOperator().equals(">")) {
@@ -88,9 +88,10 @@ public class If extends Statement {
             for (Statement command : this.getInIfCommands()) {
                 command.run();
             }
-            return 1;
+            /*recursive amount of this statement*/
+            return 1; // true case
         }
-        return 0;
+        return 0; //false case
     }
 
 }

@@ -14,9 +14,9 @@ public class Print extends Statement {
 
     @Override
     public Number run() {
-        Number output = super.variableGetValue(this.var,super.getLineNumber());
+        Number output = super.variableGetValue(this.var,super.getLineNumber()); //getting the value of output
         System.out.println(output);
-        return String.valueOf(output).length();
+        return String.valueOf(output).length(); //recursive amount of this statement
     }
 
 }

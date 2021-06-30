@@ -12,7 +12,7 @@ public abstract class Statement implements Runnable {
     }
     
     
-    public static Number variableGetValue(String var,int lineNumber) {
+    public static Number variableGetValue(String var,int lineNumber) { //for returning the value of a String which is variable
         try {
             int variable = Integer.parseInt(var);
             return variable;

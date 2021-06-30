@@ -25,7 +25,8 @@ public class For extends Statement {
 
     public void setRepeatValue(String repeatValue) {
         int repeatTime;
-        if (super.variableGetValue(repeatValue, super.getLineNumber()) instanceof Integer) {
+        if (super.variableGetValue(repeatValue, super.getLineNumber()) instanceof Integer) {/*getting the value of repeat
+        value of 'for' command and it must be an Integer*/
             repeatTime = (int) super.variableGetValue(repeatValue, super.getLineNumber());
             this.repeatValue = repeatTime;
         } else {
@@ -41,7 +42,7 @@ public class For extends Statement {
                 this.getInForCommands().get(j).run();
             }
         }
-        return this.getRepeatValue();
+        return this.getRepeatValue();//recursive amount of this statement
     }
 
 }

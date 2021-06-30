@@ -4,13 +4,14 @@ public class Calculation extends Statement {
     private Number var1;
     private Number var2;
     private char operator;
-    private Statement calcIns = null;
+    private Statement calcIns = null; /* This field will be assigned by one of these four commands instance: addition
+    ,subtraction,multiplication or division*/
 
     protected Calculation(String var1, String operator, String var2,int lineNumber) {
         super.setLineNumber(lineNumber);
         this.setVar1(super.variableGetValue(var1,super.getLineNumber()));
         this.setVar2(super.variableGetValue(var2,super.getLineNumber()));
-        this.setOperator(operator);
+        this.setOperator(operator);  // checking the calculation operator for constructing the correct instance
         if (this.getOperator() == '+') {
             calcIns = new Addition(this.getVar1(),this.getVar2());
         } else if (this.getOperator() == '-') {
@@ -38,7 +39,7 @@ public class Calculation extends Statement {
         return var2;
     }
 
-    public void setOperator(String operatorChar) {
+    public void setOperator(String operatorChar) { // This setter check if the operator is valid or not
         String operator = operatorChar;
         if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("*")) {
             this.operator = operatorChar.charAt(0);
@@ -57,7 +58,7 @@ public class Calculation extends Statement {
     }
 
     @Override
-    public  Number run() {
+    public  Number run() {//TODO it won`t be used
         return null;
     }
 }

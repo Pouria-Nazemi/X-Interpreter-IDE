@@ -19,8 +19,9 @@ public class Numbers {
         return variables;
     }
 
-    public static void changeVariableValue(String name, Number value,int lineNumber) {
-        if (Numbers.variables.get(name) instanceof Integer && value instanceof Float) {
+    public static void changeVariableValue(String name, Number value,int lineNumber) { /*This method is for updating the
+    value of variables that have been declared*/
+        if (Numbers.variables.get(name) instanceof Integer && value instanceof Float) {//check if the value can be assigned to the variable
             throw new RuntimeException("You cannot assign a float value to an integer variable" + " At line: " + lineNumber);
         } else {
             Numbers.variables.put(name, value);
@@ -35,7 +36,7 @@ public class Numbers {
         this.name = name;
     }
 
-    private void setValue(java.lang.Number value) {
+    private void setValue(Number value) {
         this.value = value;
     }
 

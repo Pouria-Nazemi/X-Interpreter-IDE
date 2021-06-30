@@ -25,7 +25,7 @@ public class Addition extends Statement {
 
     @Override
     public Number run() {
-        return this.getResult();
+        return this.getResult();//recursive amount of this statement
     }
 
 }
