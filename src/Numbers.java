@@ -3,12 +3,12 @@ import java.util.HashMap;
 
 public class Numbers {
 
-    private static HashMap<String, java.lang.Number> variables = new HashMap<String, java.lang.Number>();
+    private static HashMap<String, Number> variables = new HashMap<String,Number>();
     protected String name;
     protected Number value;
     protected int lineNumber;
 
-    protected Numbers(String name, java.lang.Number value,int lineNumber) {
+    protected Numbers(String name, Number value,int lineNumber) {
         this.setName(name);
         this.setValue(value);
         this.setLineNumber(lineNumber);

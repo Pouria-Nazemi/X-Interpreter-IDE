@@ -17,12 +17,13 @@ public class Assignment extends Statement {
     }
 
     public Assignment(String assignVariable, String firstVar, String operator, String secondValue,int lineNumber) {
+        super.setLineNumber(lineNumber);
         this.setVariableName(assignVariable);
         this.getExpression().add(assignVariable);
         this.getExpression().add(firstVar);
         this.getExpression().add(operator);
         this.getExpression().add(secondValue);
-        super.setLineNumber(lineNumber);
+        
     }
 
     public void setOutcome(Number outcome) {

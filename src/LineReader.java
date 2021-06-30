@@ -9,7 +9,25 @@ public class LineReader {
     
     private ArrayList<String> program = new ArrayList<>();
     private ArrayList<ArrayList<Statement>> commands = new ArrayList<ArrayList<Statement>>();
-    private int ifFor = -1; 
+    private int ifForNum = -1; 
+
+    
+
+    public ArrayList<String> getProgram() {
+        return program;
+    }
+
+    public ArrayList<ArrayList<Statement>> getCommands() {
+        return commands;
+    }
+    
+    public int getIfForNum() {
+        return ifForNum;
+    }
+
+    
+    
+    
 
     public LineReader(String code) {
         try {
@@ -20,23 +38,29 @@ public class LineReader {
     }
 
     public void linesOfProgram(Scanner codes) {
-        int numOfFor, numOFif;
+        int numOfFor, numOFif,numOfSepearator = 0;
         while (codes.hasNextLine()) {
             String line = codes.nextLine();
-            program.add(line);
+            this.getProgram().add(line);
+            if(line.trim() != null && line.trim().equals("%%")){
+                numOfSepearator++;
+            }
         }
-        if (!this.program.contains("%%")) {
+        if(numOfSepearator>1){
+            throw new RuntimeException("More than one '%%' character");
+        }
+        if (!this.getProgram().contains("%%")) {
             throw new RuntimeException("Missing '%%'");
         }
-        for (int i = 0; i < this.program.size(); i++) {
+        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {
             numOfFor = 0;
-            if (this.program.get(i).trim().startsWith("for")) {
+            if (this.getProgram().get(i).trim().startsWith("for")) {
                 numOfFor++;
-                for (int j = i + 1; j < this.program.size(); j++) {
-                    if (this.program.get(j).trim().startsWith("for")) {
+                for (int j = i + 1; j < this.getProgram().size() && this.getProgram().get(j) != null; j++) {
+                    if (this.getProgram().get(j).trim().startsWith("for")) {
                         numOfFor++;
                     }
-                    if (this.program.get(j).trim().startsWith("end for")) {
+                    if (this.getProgram().get(j).trim().startsWith("end for")) {
                         numOfFor--;
                     }
                     if (numOfFor == 0) {
@@ -49,15 +73,15 @@ public class LineReader {
                 }
             }
         }
-        for (int i = 0; i < this.program.size(); i++) {
+        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {
             numOFif = 0;
-            if (this.program.get(i).trim().startsWith("if")) {
+            if (this.getProgram().get(i).trim().startsWith("if")) {
                 numOFif++;
-                for (int j = i+1; j < this.program.size(); j++) {
-                    if (this.program.get(j).trim().startsWith("if")) {
+                for (int j = i+1; j < this.getProgram().size() && this.getProgram().get(j) != null; j++) {
+                    if (this.getProgram().get(j).trim().startsWith("if")) {
                         numOFif++;
                     }
-                    if (this.program.get(j).trim().startsWith("end if")) {
+                    if (this.getProgram().get(j).trim().startsWith("end if")) {
                         numOFif--;
                     }
                     if (numOFif == 0) {
@@ -73,7 +97,7 @@ public class LineReader {
     }
 
     public int LineFinder(String line) {
-        return this.program.indexOf(line) + 1;
+        return this.getProgram().indexOf(line) + 1;
     }
 
     public void variableDeclaration(String codes) throws IOException {
@@ -83,13 +107,18 @@ public class LineReader {
         while (code.hasNext()) {
             lineNumber++;
             String line = code.nextLine();
-            if (line != null && line.trim().equals("%%")) {
-                newStatementReader(code);
-                break;//End of variable declaration part
-            }
+
             if(line.trim().length()==0){
                 continue;
             }
+            if(line.trim().startsWith("//")){
+                continue;
+            }
+            if (line.trim().equals("%%")) {
+                StatementReader(code);
+                break;//End of variable declaration part
+            }
+
 
             String[] parts = line.trim().split("[ ]+");
 
@@ -149,20 +178,20 @@ public class LineReader {
         }
     }
 
-    public void newStatementReader(Scanner code) {
+    public void StatementReader(Scanner code) {
 
         while (code.hasNextLine()) {
             String line = code.nextLine();
-            if (line.trim().startsWith("//")) { //comment
-                line = code.nextLine();
-            }
             if(line.trim().length()==0){
                 continue;
             }
+            if (line.trim().startsWith("//")) { //comment
+                line = code.nextLine();
+            }
             String[] parts = line.trim().split("[ ]+");
             Statement command = null;
-            String forCommand = "";
-            String ifCommand = "";
+            StringBuilder forCommand = new StringBuilder("");
+            StringBuilder ifCommand = new StringBuilder("");
             int lineNumber = this.LineFinder(line);
             switch (parts[0]) {
                 case "print": {
@@ -176,10 +205,11 @@ public class LineReader {
 
                 case "for": {
                     if (parts.length == 2) {
-                        this.ifFor++;
-                        this.commands.add(this.ifFor, new ArrayList<Statement>());
-                        this.commands.get(ifFor).add(new For(parts[1], lineNumber));
+                        this.ifForNum++;
+                        this.getCommands().add(this.getIfForNum(), new ArrayList<Statement>());
+                        this.getCommands().get(this.getIfForNum()).add(new For(parts[1], lineNumber));
                         int i = 1; //for finding the correct end for command
+
                         while (code.hasNextLine()) {//Command Block Of For
                             String lines = code.nextLine();
                             lines = lines.trim();
@@ -195,18 +225,18 @@ public class LineReader {
                                 }
                                 i--;
                             }
-                            forCommand += lines + "\n";
+                            forCommand.append(lines + "\n");
                         }
-                        Scanner forCommands = new Scanner(forCommand);
-                        this.newStatementReader(forCommands);
+                        Scanner forCommands = new Scanner(forCommand.toString());
+                        this.StatementReader(forCommands);
 
-                        Statement supCommand = this.addInnerCommands(commands.get(this.ifFor).get(0), commands.get(this.ifFor));
-                        commands.get(this.ifFor).clear();
-                        this.ifFor--;
-                        if (this.ifFor >= 0) {
-                            commands.get(this.ifFor).add(supCommand);
-                        } else if (this.ifFor == -1) {
-                            commands.get(this.ifFor + 1).add(supCommand);
+                        Statement supCommand = this.addInnerCommands(this.getCommands().get(this.getIfForNum()).get(0), this.getCommands().get(this.getIfForNum()));
+                        this.getCommands().get(this.getIfForNum()).clear();
+                        this.ifForNum--;
+                        if (this.getIfForNum() >= 0) {
+                            this.getCommands().get(this.getIfForNum()).add(supCommand);
+                        } else if (this.getIfForNum() == -1) {
+                            this.getCommands().get(this.getIfForNum() + 1).add(supCommand);
                         }
 
                         break;
@@ -217,9 +247,9 @@ public class LineReader {
 
                 case "if": {
                     if (parts.length == 4) {
-                        this.ifFor++;
-                        this.commands.add(this.ifFor, new ArrayList<Statement>());
-                        this.commands.get(ifFor).add(new If(parts[1], parts[2], parts[3], lineNumber));
+                        this.ifForNum++;
+                        this.getCommands().add(this.getIfForNum(), new ArrayList<Statement>());
+                        this.getCommands().get(this.getIfForNum()).add(new If(parts[1], parts[2], parts[3], lineNumber));
                         int i = 1; //for finding the correct end if command
 
                         while (code.hasNextLine()) {//Command Block Of If
@@ -237,17 +267,17 @@ public class LineReader {
                                 }
                                 i--;
                             }
-                            ifCommand += lines + "\n";
+                            ifCommand.append(lines + "\n");
                         }
-                        Scanner ifCommands = new Scanner(ifCommand);
-                        this.newStatementReader(ifCommands);
-                        Statement supCommand = this.addInnerCommands(commands.get(this.ifFor).get(0), commands.get(this.ifFor));
-                        commands.get(this.ifFor).clear();
-                        this.ifFor--;
-                        if (this.ifFor >= 0) {
-                            commands.get(this.ifFor).add(supCommand);
-                        } else if (this.ifFor == -1) {
-                            commands.get(this.ifFor + 1).add(supCommand);
+                        Scanner ifCommands = new Scanner(ifCommand.toString());
+                        this.StatementReader(ifCommands);
+                        Statement supCommand = this.addInnerCommands(this.getCommands().get(this.getIfForNum()).get(0), this.getCommands().get(this.getIfForNum()));
+                        this.getCommands().get(this.getIfForNum()).clear();
+                        this.ifForNum--;
+                        if (this.getIfForNum() >= 0) {
+                            this.getCommands().get(this.getIfForNum()).add(supCommand);
+                        } else if (this.getIfForNum() == -1) {
+                            this.getCommands().get(this.getIfForNum() + 1).add(supCommand);
                         }
                         break;
                     } else {
@@ -266,23 +296,23 @@ public class LineReader {
                                 throw new RuntimeException("Invalid assignment command " + "At line: " + lineNumber);
                             }
                         } else {
-                            throw new RuntimeException("Invalid assignment command " + "At line: " + lineNumber);
+                            throw new RuntimeException("Invalid assignment operator " + "At line: " + lineNumber);
                         }
                     } else {
                         throw new RuntimeException("Invalid command " + "At line: " + lineNumber);
                     }
                 }
             }
-            if (this.ifFor < 0) {
+            if (this.getIfForNum() < 0) {
                 if (command != null) {
                     command.run();
                 } else {
-                    this.commands.get(0).get(0).run();
-                    this.commands.clear();
+                    this.getCommands().get(0).get(0).run();
+                    this.getCommands().clear();
                 }
             } else {
                 if (command != null) {
-                    this.commands.get(ifFor).add(command);
+                    this.getCommands().get(this.getIfForNum()).add(command);
                 }
             }
         }
