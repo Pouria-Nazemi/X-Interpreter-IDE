@@ -1,3 +1,4 @@
+import Interpreter.LineReader;
 
 public class Main {
 
@@ -12,7 +13,7 @@ public class Main {
                 /*6*/  + "%%\n"
                 /*7*/  + "for x\n"
                 /*8*/  + "for 2\n"
-                /*9*/ + "sum = sum + 2\n"
+                /*9*/  + "sum = sum + 2\n"
                 /*10*/ + "end for\n"
                 /*11*/ + "print 20\n"
                 /*12*/ + "end for\n"
@@ -20,10 +21,10 @@ public class Main {
                 /*14*/ + "sum = 120\n"
                 /*15*/ + "if sum == 120\n"
                 /*16*/ + "for 10\n"
-                /*17*/  + "print 10\n"
+                /*17*/ + "print 10\n"
                 /*18*/ + "if sum < 125\n"
                 /*19*/ + "for 2\n"
-                /*20*/  + "print sum\n"
+                /*20*/ + "print sum\n"
                 /*21*/ + "end for\n"
                 /*22*/ + "sum = sum + 1\n"
                 /*23*/ + "end if\n"

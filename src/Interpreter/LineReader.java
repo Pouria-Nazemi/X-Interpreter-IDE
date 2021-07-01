@@ -1,58 +1,56 @@
+package Interpreter;
+
+import Statements.*;
+import Variables.FloatVar;
+import Variables.IntVar;
+import Variables.Numbers;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Scanner;
 
 public class LineReader {
     
-    private ArrayList<String> program = new ArrayList<>(); //For storing all lines of program to be checked
-    private ArrayList<ArrayList<Statement>> commands = new ArrayList<ArrayList<Statement>>(); //For storing nested if and for commands
+    private ArrayList<String> program = new ArrayList<>(); //Statements.For storing all lines of program to be checked
+    private ArrayList<ArrayList<Statement>> commands = new ArrayList<ArrayList<Statement>>(); //Statements.For storing nested if and for commands
     private int ifForNum = -1;  //Use as the index of above Arraylist in nested if and for commands
 
-    
-
-    public ArrayList<String> getProgram() {
+    private ArrayList<String> getProgram() {
         return program;
     }
 
-    public ArrayList<ArrayList<Statement>> getCommands() {
+    private ArrayList<ArrayList<Statement>> getCommands() {
         return commands;
     }
-    
-    public int getIfForNum() {
+
+    private int getIfForNum() {
         return ifForNum;
     }
-
-    
-    
-    
 
     public LineReader(String code) {
         try {
             this.variableDeclaration(code);
         } catch (IOException ex) {
-            Logger.getLogger(LineReader.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
-    public void linesOfProgram(Scanner codes) {//Adding all lines to the arrylist for control and getting number of line
+    private void linesOfProgram(Scanner codes) {//Adding all lines to the arraylist for control and getting number of line
         int numOfFor, numOFif,numOfSepearator = 0;
         while (codes.hasNextLine()) {
             String line = codes.nextLine();
             this.getProgram().add(line);
-            if(line.trim() != null && line.trim().equals("%%")){ // For checking that only one '%%' appears in code
+            if(line.trim().equals("%%")){ // Statements.For checking that only one '%%' appears in code
                 numOfSepearator++;
             }
         }
         if(numOfSepearator>1){
-            throw new RuntimeException("More than one '%%' character");
+            throw new InterpretingException("More than one '%%' character");
         }
-        if (!this.getProgram().contains("%%")) { // For checking the existance of '%%'
-            throw new RuntimeException("Missing '%%'");
+        if (!this.getProgram().contains("%%")) { // Statements.For checking the existance of '%%'
+            throw new InterpretingException("Missing '%%'");
         }
-        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) { // For checking that all 'for' block of commands are closed
+        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) { // Statements.For checking that all 'for' block of commands are closed
             numOfFor = 0;
             if (this.getProgram().get(i).trim().startsWith("for")) {
                 numOfFor++;
@@ -69,11 +67,11 @@ public class LineReader {
 
                 }
                 if (numOfFor != 0) {
-                    throw new RuntimeException("Block of for command At line: " + (i + 1) + " is not closed");
+                    throw new InterpretingLineException("Block of for command is not closed",(i+1));
                 }
             }
         }
-        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {// For checking that all 'if' block of commands are closed
+        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {// Statements.For checking that all 'if' block of commands are closed
             numOFif = 0;
             if (this.getProgram().get(i).trim().startsWith("if")) {
                 numOFif++;
@@ -90,17 +88,17 @@ public class LineReader {
 
                 }
                 if (numOFif != 0) {
-                    throw new RuntimeException("Block of if command At line: " + (i + 1) + " is not closed");
+                    throw new InterpretingLineException("Block of if command is not closed",(i+1));
                 }
             }
         }
     }
 
-    public int LineFinder(String line) {
+    private int LineFinder(String line) {
         return this.getProgram().indexOf(line) + 1;
     }
 
-    public void variableDeclaration(String codes) throws IOException {
+    private void variableDeclaration(String codes) throws IOException {
         Scanner code = new Scanner(codes);
         linesOfProgram(new Scanner(codes));
         int lineNumber = 0;
@@ -125,49 +123,44 @@ public class LineReader {
                     Check the name of new variable not to be repeated and if it matches java format of variable name declaration
                  */
                 if (parts[0].equals("int")) { //Integer declaration
-
                     if (parts.length == 4 && parts[2].equals("=")) { //example pattern: int x = 15
                         try {
                             int value = Integer.parseInt(parts[3]);
-
-                            Int var = new Int(parts[1], value, lineNumber);
+                            IntVar var = new IntVar(parts[1], value, lineNumber);
                         } catch (NumberFormatException ex) {
-                            throw new RuntimeException("The value you entered At line: " + lineNumber
-                                    + " cannot be assigned to an Integer variable");
+                            throw new InterpretingLineException("The value you entered cannot be assigned to an Integer variable" , lineNumber);
                         }
 
                     } else if (parts.length == 2) {//example pattern: int x
-                        Int var = new Int(parts[1], lineNumber);
+                        IntVar var = new IntVar(parts[1], lineNumber);
                     } else {
-                        throw new RuntimeException("Wrong format of int declaration." + "At line: " + lineNumber);
+                        throw new InterpretingLineException("Wrong format of int declaration." , lineNumber);
                     }
                 } else if (parts[0].equals("float")) {//Float declaration
 
                     if (parts.length == 4 && parts[2].equals("=")) {//example pattern: float x = 15.00
                         try {
                             float value = Float.parseFloat(parts[3]);
-                            FloaT var = new FloaT(parts[1], value, lineNumber);
+                            FloatVar var = new FloatVar(parts[1], value, lineNumber);
                         } catch (NumberFormatException ex) {
-                            throw new RuntimeException("The value you entered At line: " + lineNumber
-                                    + " cannot be assigned to a float variable");
+                            throw new InterpretingLineException("The value you entered cannot be assigned to a float variable",lineNumber);
                         }
-
                     } else if (parts.length == 2) {//example pattern: float x 
-                        FloaT var = new FloaT(parts[1], lineNumber);
+                        FloatVar var = new FloatVar(parts[1], lineNumber);
                     } else {
-                        throw new RuntimeException("Wrong format of float declaration " + "At line: " + lineNumber);
+                        throw new InterpretingLineException("Wrong format of float declaration " , lineNumber);
                     }
                 } else {
-                    throw new RuntimeException("Wrong format of variable declaration " + "At line: " + lineNumber);
+                    throw new InterpretingLineException("Wrong format of variable declaration " , lineNumber);
                 }
             } else {
-                throw new RuntimeException("Name of the variable is not accepted " + "At line: " + lineNumber);
+                throw new InterpretingLineException("Name of the variable is not accepted " , lineNumber);
 
             }
         }
     }
-    public boolean varNameValidation(String name){
-        if(!Numbers.getVariables().containsKey(name) && name.matches("([a-zA-Z$][\\w$]*|[_][\\w$]+)")
+    private boolean varNameValidation(String name){
+        if(!Variables.Numbers.getVariables().containsKey(name) && name.matches("([a-zA-Z$][\\w$]*|[_][\\w$]+)")
         && !name.equals("for") &&!name.equals("if")&&!name.equals("print")&&!name.equals("end")){
             return true;
         }
@@ -176,8 +169,7 @@ public class LineReader {
         }
     }
 
-    public void StatementReader(Scanner code) {
-
+    private void StatementReader(Scanner code) {
         while (code.hasNextLine()) {
             String line = code.nextLine();
             if(line.trim().length()==0){//Ignoring empty lines
@@ -188,15 +180,15 @@ public class LineReader {
             }
             String[] parts = line.trim().split("[ ]+");
             Statement command = null;
-            StringBuilder forCommand = new StringBuilder("");//For storing each 'for' block
-            StringBuilder ifCommand = new StringBuilder("");//For storing each 'if' block
+            StringBuilder forCommand = new StringBuilder("");//Statements.For storing each 'for' block
+            StringBuilder ifCommand = new StringBuilder("");//Statements.For storing each 'if' block
             int lineNumber = this.LineFinder(line);//getting the number of line
             switch (parts[0]) {
                 case "print": {
                     if (parts.length == 2) {
                         command = new Print(parts[1],lineNumber);
                     } else {
-                        throw new RuntimeException("Wrong format of print command " + lineNumber);
+                        throw new InterpretingLineException("Wrong format of print command " , lineNumber);
                     }
                     break;
                 }
@@ -207,8 +199,7 @@ public class LineReader {
                         this.getCommands().add(this.getIfForNum(), new ArrayList<Statement>());
                         this.getCommands().get(this.getIfForNum()).add(new For(parts[1], lineNumber));
                         int i = 1; //for finding the correct end for command
-
-                        while (code.hasNextLine()) {//Command Block Of For
+                        while (code.hasNextLine()) {//Command Block Of Statements.For
                             String lines = code.nextLine();
                             lines = lines.trim();
                             if(lines.length()==0){
@@ -239,7 +230,7 @@ public class LineReader {
 
                         break;
                     } else {
-                        throw new RuntimeException("Invalid for command " + "At line: " + lineNumber);
+                        throw new InterpretingLineException("Invalid for command " , lineNumber);
                     }
                 }
 
@@ -249,8 +240,7 @@ public class LineReader {
                         this.getCommands().add(this.getIfForNum(), new ArrayList<Statement>());
                         this.getCommands().get(this.getIfForNum()).add(new If(parts[1], parts[2], parts[3], lineNumber));
                         int i = 1; //for finding the correct end if command
-
-                        while (code.hasNextLine()) {//Command Block Of If
+                        while (code.hasNextLine()) {//Command Block Of Statements.If
                             String lines = code.nextLine();
                             lines = lines.trim();
                             if(lines.length()==0){
@@ -269,6 +259,7 @@ public class LineReader {
                         }
                         Scanner ifCommands = new Scanner(ifCommand.toString());
                         this.StatementReader(ifCommands);
+
                         Statement supCommand = this.addInnerCommands(this.getCommands().get(this.getIfForNum()).get(0), this.getCommands().get(this.getIfForNum()));
                         this.getCommands().get(this.getIfForNum()).clear();
                         this.ifForNum--;
@@ -279,26 +270,26 @@ public class LineReader {
                         }
                         break;
                     } else {
-                        throw new RuntimeException("Invalid if command " + "At line: " + lineNumber);
+                        throw new InterpretingLineException("Invalid if command " , lineNumber);
                     }
                 }
 
                 default: {
-                    if (Numbers.getVariables().containsKey(parts[0])) {
-                        /*Assignment statement*/
+                    if (Variables.Numbers.getVariables().containsKey(parts[0])) {
+                        /*Statements.Assignment statement*/
                         if (parts[1].equals("=")) {
                             if (parts.length == 5) {
                                 command = (new Assignment(parts[0], parts[2], parts[3], parts[4], lineNumber));
                             } else if (parts.length == 3) {
                                 command = (new Assignment(parts[0], parts[2], lineNumber));
                             } else {
-                                throw new RuntimeException("Invalid assignment command " + "At line: " + lineNumber);
+                                throw new InterpretingLineException("Invalid assignment command " , lineNumber);
                             }
                         } else {
-                            throw new RuntimeException("Invalid assignment operator " + "At line: " + lineNumber);
+                            throw new InterpretingLineException("Invalid assignment operator " , lineNumber);
                         }
                     } else {
-                        throw new RuntimeException("Invalid command " + "At line: " + lineNumber);
+                        throw new InterpretingLineException("Invalid command " , lineNumber);
                     }
                 }
             }
@@ -317,7 +308,7 @@ public class LineReader {
         }
     }
 
-    public Statement addInnerCommands(Statement supCommand, ArrayList<Statement> commands) { /* adding all sub commands of
+    private Statement addInnerCommands(Statement supCommand, ArrayList<Statement> commands) { /* adding all sub commands of
      a for or if command into the commands of a if or for instance and return that instance*/
         if (supCommand instanceof For) {
             For command = (For) supCommand;
@@ -332,7 +323,7 @@ public class LineReader {
             }
             return command;
         } else {
-            throw new RuntimeException("Wrong Super Comamnd");
+            throw new RuntimeException("Wrong Super Command");
         }
     }
 }

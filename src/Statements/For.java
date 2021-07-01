@@ -1,3 +1,6 @@
+package Statements;
+
+import Interpreter.InterpretingLineException;
 
 import java.util.ArrayList;
 
@@ -15,22 +18,18 @@ public class For extends Statement {
         return inForCommands;
     }
 
-    public int getRepeatValue() {
+    private int getRepeatValue() {
         return repeatValue;
     }
 
-    public void setInForCommands(ArrayList<Statement> inForCommands) {
-        this.inForCommands.addAll(inForCommands);
-    }
-
-    public void setRepeatValue(String repeatValue) {
+    private void setRepeatValue(String repeatValue) {
         int repeatTime;
-        if (super.variableGetValue(repeatValue, super.getLineNumber()) instanceof Integer) {/*getting the value of repeat
+        if (Statement.variableGetValue(repeatValue, super.getLineNumber()) instanceof Integer) {/*getting the value of repeat
         value of 'for' command and it must be an Integer*/
-            repeatTime = (int) super.variableGetValue(repeatValue, super.getLineNumber());
+            repeatTime = (int) Statement.variableGetValue(repeatValue, super.getLineNumber());
             this.repeatValue = repeatTime;
         } else {
-            throw new RuntimeException("Wrong declaration of repeat value of for command " + "At line: " + super.getLineNumber());
+            throw new InterpretingLineException("Wrong declaration of repeat value of for command " , super.getLineNumber());
         }
 
     }

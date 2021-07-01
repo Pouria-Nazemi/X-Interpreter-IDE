@@ -1,3 +1,4 @@
+package Statements;
 
 import java.util.ArrayList;
 
@@ -26,37 +27,37 @@ public class Assignment extends Statement {
         
     }
 
-    public void setOutcome(Number outcome) {
+    private void setOutcome(Number outcome) {
         this.outcome = outcome;
     }
 
-    public void setVariableName(String VariableName) {
+    private void setVariableName(String VariableName) {
         this.assignVariableName = VariableName;
     }
 
-    public Number getOutcome() {
+    private Number getOutcome() {
         return outcome;
     }
 
-    public String getAssignVariableName() {
+    private String getAssignVariableName() {
         return assignVariableName;
     }
 
-    public ArrayList<String> getExpression() {
+    private ArrayList<String> getExpression() {
         return expression;
     }
 
     @Override
     public Number run() {
         if (this.getExpression().size() == 2) { // In this case there is no need to any calculation
-            this.setOutcome(super.variableGetValue(this.getExpression().get(1),super.getLineNumber()));
+            this.setOutcome(Statement.variableGetValue(this.getExpression().get(1),super.getLineNumber()));
         } else if (this.getExpression().size() == 4) {/* In this case there is need to calculation so a calculation object
          is made and the result will be set to output*/
             Calculation calculate = new Calculation(this.getExpression().get(1), this.getExpression().get(2), this.getExpression().get(3),lineNumber);
             calculateNeed = calculate.getCalcIns();
             this.setOutcome(this.calculateNeed.run());
         }
-        Numbers.changeVariableValue(this.getAssignVariableName(), this.getOutcome(),super.getLineNumber()); // For assigning the result into the variable
+        Variables.Numbers.changeVariableValue(this.getAssignVariableName(), this.getOutcome(),super.getLineNumber()); // Statements.For assigning the result into the variable
         
         return this.getOutcome(); //recursive amount of this statement
     }

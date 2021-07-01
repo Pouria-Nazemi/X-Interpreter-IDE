@@ -1,3 +1,4 @@
+package Statements;
 
 public class Addition extends Statement {
 
@@ -11,11 +12,11 @@ public class Addition extends Statement {
         this.result = result;
     }
 
-    public Number getResult() {
+    private Number getResult() {
         return result;
     }
 
-    public Number addNumbers(Number a, Number b) {
+    private Number addNumbers(Number a, Number b) {
         if (a instanceof Float || b instanceof Float) {
             return a.floatValue() + b.floatValue();
         } else {

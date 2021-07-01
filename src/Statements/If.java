@@ -1,3 +1,6 @@
+package Statements;
+
+import Interpreter.InterpretingLineException;
 
 import java.util.ArrayList;
 
@@ -20,41 +23,41 @@ public class If extends Statement {
         return inIfCommands;
     }
 
-    public void setCondition(boolean condition) {
+    private void setCondition(boolean condition) {
         this.condition = condition;
     }
 
-    public boolean getCondition() {
+    private boolean getCondition() {
         return condition;
     }
 
-    public void setFirstValue(String firstValue) {
+    private void setFirstValue(String firstValue) {
         this.firstValue = firstValue;
     }
 
-    public void setSecondValue(String secondValue) {
+    private void setSecondValue(String secondValue) {
         this.secondValue = secondValue;
     }
 
-    public void setCompareOperator(String compareOperator) {
+    private void setCompareOperator(String compareOperator) {
         this.compareOperator = compareOperator;
     }
 
-    public String getFirstValue() {
+    private String getFirstValue() {
         return firstValue;
     }
 
-    public String getSecondValue() {
+    private String getSecondValue() {
         return secondValue;
     }
 
-    public String getCompareOperator() {
+    private String getCompareOperator() {
         return compareOperator;
     }
 
     private boolean checkCondition() {
-        float var1 = super.variableGetValue(this.getFirstValue(),super.getLineNumber()).floatValue(); //getting the value of variables
-        float var2 = super.variableGetValue(this.getSecondValue(),super.getLineNumber()).floatValue();//getting the value of variables
+        float var1 = Statement.variableGetValue(this.getFirstValue(),super.getLineNumber()).floatValue(); //getting the value of variables
+        float var2 = Statement.variableGetValue(this.getSecondValue(),super.getLineNumber()).floatValue();//getting the value of variables
         if (this.getCompareOperator().length() == 2) { // check the compare operator and the condition
             switch (this.getCompareOperator()) {
                 case "==":
@@ -74,12 +77,9 @@ public class If extends Statement {
                 return (var1 > var2);
             }
         }
-        throw new RuntimeException("Wrong compare operation in if command At line: " + super.getLineNumber());
+        throw new InterpretingLineException("Wrong compare operation in if command" , super.getLineNumber());
     }
 
-    public boolean isCondition() {
-        return condition;
-    }
 
     @Override
     public Number run() {

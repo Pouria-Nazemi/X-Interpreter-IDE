@@ -1,3 +1,6 @@
+package Statements;
+
+import Interpreter.InterpretingLineException;
 
 public class Calculation extends Statement {
 
@@ -9,8 +12,8 @@ public class Calculation extends Statement {
 
     protected Calculation(String var1, String operator, String var2,int lineNumber) {
         super.setLineNumber(lineNumber);
-        this.setVar1(super.variableGetValue(var1,super.getLineNumber()));
-        this.setVar2(super.variableGetValue(var2,super.getLineNumber()));
+        this.setVar1(Statement.variableGetValue(var1,super.getLineNumber()));
+        this.setVar2(Statement.variableGetValue(var2,super.getLineNumber()));
         this.setOperator(operator);  // checking the calculation operator for constructing the correct instance
         if (this.getOperator() == '+') {
             calcIns = new Addition(this.getVar1(),this.getVar2());
@@ -23,37 +26,37 @@ public class Calculation extends Statement {
         }
     }
 
-    public void setVar1(Number var1) {
+    private void setVar1(Number var1) {
         this.var1 = var1;
     }
 
-    public void setVar2(Number var2) {
+    private void setVar2(Number var2) {
         this.var2 = var2;
     }
 
-    public Number getVar1() {
+    private Number getVar1() {
         return var1;
     }
 
-    public Number getVar2() {
+    private Number getVar2() {
         return var2;
     }
 
-    public void setOperator(String operatorChar) { // This setter check if the operator is valid or not
+    private void setOperator(String operatorChar) { // This setter check if the operator is valid or not
         String operator = operatorChar;
         if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("*")) {
             this.operator = operatorChar.charAt(0);
         } else {
-            throw new RuntimeException("Invalid calculation operator " + "At line: " + super.lineNumber);
+            throw new InterpretingLineException("Invalid calculation operator" ,  super.lineNumber);
         }
 
     }
 
-    public char getOperator() {
+    private char getOperator() {
         return operator;
     }
 
-    public Statement getCalcIns() {
+    protected Statement getCalcIns() {
         return calcIns;
     }
 

@@ -1,17 +1,19 @@
+package Statements;
+
+import Interpreter.InterpretingLineException;
 
 public abstract class Statement implements Runnable {
     
     protected int lineNumber;
 
-    public int getLineNumber() {
+    protected int getLineNumber() {
         return lineNumber;
     }
 
-    public void setLineNumber(int lineNumber) {
+    protected void setLineNumber(int lineNumber) {
         this.lineNumber = lineNumber;
     }
-    
-    
+
     public static Number variableGetValue(String var,int lineNumber) { //for returning the value of a String which is variable
         try {
             int variable = Integer.parseInt(var);
@@ -21,17 +23,16 @@ public abstract class Statement implements Runnable {
                 float variable = Float.parseFloat(var);
                 return variable;
             } catch (NumberFormatException exp) {
-                if (Numbers.getVariables().get(var) instanceof Integer) {
-                    return (Numbers.getVariables().get(var).intValue());
-                } else if (Numbers.getVariables().get(var) instanceof Double) {
-                    return (Numbers.getVariables().get(var).floatValue());
+                if (Variables.Numbers.getVariables().get(var) instanceof Integer) {
+                    return (Variables.Numbers.getVariables().get(var).intValue());
+                } else if (Variables.Numbers.getVariables().get(var) instanceof Double) {
+                    return (Variables.Numbers.getVariables().get(var).floatValue());
                 }
             }
         }
-        throw new RuntimeException("Wrong variable used " +"At line: " + lineNumber);
+        throw new InterpretingLineException("Wrong variable used " , lineNumber);
     }
-    
+
     @Override
     public abstract Number run();
-
 }

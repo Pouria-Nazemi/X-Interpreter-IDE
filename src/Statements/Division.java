@@ -1,3 +1,4 @@
+package Statements;
 
 public class Division extends Statement {
 
@@ -7,15 +8,15 @@ public class Division extends Statement {
         this.setResult(this.divNumbers(a, b));
     }
 
-    public void setResult(Number result) {
+    private void setResult(Number result) {
         this.result = result;
     }
 
-    public Number getResult() {
+    private Number getResult() {
         return result;
     }
 
-    public Number divNumbers(Number a, Number b) {
+    private Number divNumbers(Number a, Number b) {
          if (a instanceof Float || b instanceof Float) {
             return a.floatValue() / b.floatValue();
         } else {
