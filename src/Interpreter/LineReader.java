@@ -28,11 +28,7 @@ public class LineReader {
     }
 
     public LineReader(String code) {
-        try {
-            this.variableDeclaration(code);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        this.variableDeclaration(code);
     }
 
     private void linesOfProgram(Scanner codes) {//Adding all lines to the arraylist for control and getting number of line
@@ -98,7 +94,7 @@ public class LineReader {
         return this.getProgram().indexOf(line) + 1;
     }
 
-    private void variableDeclaration(String codes) throws IOException {
+    private void variableDeclaration(String codes){
         Scanner code = new Scanner(codes);
         linesOfProgram(new Scanner(codes));
         int lineNumber = 0;
