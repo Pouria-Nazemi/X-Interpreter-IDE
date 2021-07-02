@@ -25,7 +25,7 @@ public abstract class Statement implements Runnable {
             } catch (NumberFormatException exp) {
                 if (Variables.Numbers.getVariables().get(var) instanceof Integer) {
                     return (Variables.Numbers.getVariables().get(var).intValue());
-                } else if (Variables.Numbers.getVariables().get(var) instanceof Double) {
+                } else if (Variables.Numbers.getVariables().get(var) instanceof Double || Variables.Numbers.getVariables().get(var) instanceof Float) {
                     return (Variables.Numbers.getVariables().get(var).floatValue());
                 }
             }

@@ -28,6 +28,7 @@ public class LineReader {
     }
 
     public LineReader(String code) {
+        Variables.Numbers.getVariables().clear();
         this.variableDeclaration(code);
     }
 
@@ -43,7 +44,7 @@ public class LineReader {
         if(numOfSepearator>1){
             throw new InterpretingException("More than one '%%' character");
         }
-        if (!this.getProgram().contains("%%")) { // Statements.For checking the existance of '%%'
+        if (numOfSepearator == 0) { // Statements.For checking the existance of '%%'
             throw new InterpretingException("Missing '%%'");
         }
         for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) { // Statements.For checking that all 'for' block of commands are closed

@@ -27,6 +27,10 @@ public class For extends Statement {
         if (Statement.variableGetValue(repeatValue, super.getLineNumber()) instanceof Integer) {/*getting the value of repeat
         value of 'for' command and it must be an Integer*/
             repeatTime = (int) Statement.variableGetValue(repeatValue, super.getLineNumber());
+            if(repeatTime<=0){
+                throw new InterpretingLineException("Wrong declaration of repeat value of for command,it should be a number" +
+                        " bigger than zero " , super.getLineNumber());
+            }
             this.repeatValue = repeatTime;
         } else {
             throw new InterpretingLineException("Wrong declaration of repeat value of for command " , super.getLineNumber());
