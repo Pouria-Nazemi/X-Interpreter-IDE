@@ -55,8 +55,11 @@ public class LineReader {
                     if (this.getProgram().get(j).trim().startsWith("for")) {
                         numOfFor++;
                     }
-                    if (this.getProgram().get(j).trim().startsWith("end for")) {
-                        numOfFor--;
+                    if (this.getProgram().get(j).trim().startsWith("end")) {
+                        String part[] = this.getProgram().get(j).trim().split("[ ]+");
+                        if(part[1].equals("for")) {
+                            numOfFor--;
+                        }
                     }
                     if (numOfFor == 0) {
                         break;
@@ -76,8 +79,11 @@ public class LineReader {
                     if (this.getProgram().get(j).trim().startsWith("if")) {
                         numOFif++;
                     }
-                    if (this.getProgram().get(j).trim().startsWith("end if")) {
-                        numOFif--;
+                    if (this.getProgram().get(j).trim().startsWith("end")) {
+                        String part[] = this.getProgram().get(j).trim().split("[ ]+");
+                        if(part[1].equals("if")) {
+                            numOFif--;
+                        }
                     }
                     if (numOFif == 0) {
                         break;
@@ -209,11 +215,14 @@ public class LineReader {
                             if (lines.startsWith("for")) {
                                 i++;
                             }
-                            if (lines.equals("end for")) { // to find the last 'end for'
-                                if (i == 1) {
-                                    break;
+                            if (lines.equals("end")) { // to find the last 'end for'
+                                String part[] = lines.trim().split("[ ]+");
+                                if(part[1].equals("for")) {
+                                    if (i == 1) {
+                                        break;
+                                    }
+                                    i--;
                                 }
-                                i--;
                             }
                             forCommand.append(lines + "\n");
                         }
@@ -250,11 +259,14 @@ public class LineReader {
                             if (lines.startsWith("if")) {
                                 i++;
                             }
-                            if (lines.equals("end if")) {// to find the last 'end for'
-                                if (i == 1) {
-                                    break;
+                            if (lines.equals("end")) {// to find the last 'end for'
+                                String part[] = lines.trim().split("[ ]+");
+                                if(part[1].equals("if")) {
+                                    if (i == 1) {
+                                        break;
+                                    }
+                                    i--;
                                 }
-                                i--;
                             }
                             ifCommand.append(lines + "\n");
                         }
