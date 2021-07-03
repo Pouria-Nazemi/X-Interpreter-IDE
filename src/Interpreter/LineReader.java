@@ -33,7 +33,7 @@ public class LineReader {
     }
 
     private void linesOfProgram(Scanner codes) {//Adding all lines to the arraylist for control and getting number of line
-        int numOfFor, numOFif,numOfSepearator = 0;
+        int numOfFor, numOFIf,numOfSepearator = 0;
         while (codes.hasNextLine()) {
             String line = codes.nextLine();
             this.getProgram().add(line);
@@ -72,25 +72,25 @@ public class LineReader {
             }
         }
         for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {// For checking that all 'if' block of commands are closed
-            numOFif = 0;
+            numOFIf = 0;
             if (this.getProgram().get(i).trim().startsWith("if")) {
-                numOFif++;
+                numOFIf++;
                 for (int j = i+1; j < this.getProgram().size() && this.getProgram().get(j) != null; j++) {
                     if (this.getProgram().get(j).trim().startsWith("if")) {
-                        numOFif++;
+                        numOFIf++;
                     }
                     if (this.getProgram().get(j).trim().startsWith("end")) {
                         String part[] = this.getProgram().get(j).trim().split("[ ]+");
                         if(part[1].equals("if")) {
-                            numOFif--;
+                            numOFIf--;
                         }
                     }
-                    if (numOFif == 0) {
+                    if (numOFIf == 0) {
                         break;
                     }
 
                 }
-                if (numOFif != 0) {
+                if (numOFIf != 0) {
                     throw new InterpretingLineException("Block of if command is not closed",(i+1));
                 }
             }
@@ -215,8 +215,8 @@ public class LineReader {
                             if (lines.startsWith("for")) {
                                 i++;
                             }
-                            if (lines.equals("end")) { // to find the last 'end for'
-                                String part[] = lines.trim().split("[ ]+");
+                            if (lines.startsWith("end")) { // to find the last 'end for'
+                                String part[] = lines.split("[ ]+");
                                 if(part[1].equals("for")) {
                                     if (i == 1) {
                                         break;
@@ -259,8 +259,8 @@ public class LineReader {
                             if (lines.startsWith("if")) {
                                 i++;
                             }
-                            if (lines.equals("end")) {// to find the last 'end for'
-                                String part[] = lines.trim().split("[ ]+");
+                            if (lines.startsWith("end")) {// to find the last 'end for'
+                                String part[] = lines.split("[ ]+");
                                 if(part[1].equals("if")) {
                                     if (i == 1) {
                                         break;
