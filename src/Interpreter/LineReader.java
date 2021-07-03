@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class LineReader {
     
-    private ArrayList<String> program = new ArrayList<>(); //Statements.For storing all lines of program to be checked
-    private ArrayList<ArrayList<Statement>> commands = new ArrayList<ArrayList<Statement>>(); //Statements.For storing nested if and for commands
+    private ArrayList<String> program = new ArrayList<>(); //For storing all lines of program to be checked
+    private ArrayList<ArrayList<Statement>> commands = new ArrayList<ArrayList<Statement>>(); //For storing nested if and for commands
     private int ifForNum = -1;  //Use as the index of above Arraylist in nested if and for commands
 
     private ArrayList<String> getProgram() {
@@ -37,17 +37,17 @@ public class LineReader {
         while (codes.hasNextLine()) {
             String line = codes.nextLine();
             this.getProgram().add(line);
-            if(line.trim().equals("%%")){ // Statements.For checking that only one '%%' appears in code
+            if(line.trim().equals("%%")){ // For checking that only one '%%' appears in code
                 numOfSepearator++;
             }
         }
         if(numOfSepearator>1){
             throw new InterpretingException("More than one '%%' character");
         }
-        if (numOfSepearator == 0) { // Statements.For checking the existance of '%%'
+        if (numOfSepearator == 0) { //For checking the existance of '%%'
             throw new InterpretingException("Missing '%%'");
         }
-        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) { // Statements.For checking that all 'for' block of commands are closed
+        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) { // For checking that all 'for' block of commands are closed
             numOfFor = 0;
             if (this.getProgram().get(i).trim().startsWith("for")) {
                 numOfFor++;
@@ -68,7 +68,7 @@ public class LineReader {
                 }
             }
         }
-        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {// Statements.For checking that all 'if' block of commands are closed
+        for (int i = 0; i < this.getProgram().size() && this.getProgram().get(i) != null; i++) {// For checking that all 'if' block of commands are closed
             numOFif = 0;
             if (this.getProgram().get(i).trim().startsWith("if")) {
                 numOFif++;
@@ -115,7 +115,7 @@ public class LineReader {
             }
 
             String[] parts = line.trim().split("[ ]+");
-            if(parts.length>=1) {
+            if(parts.length>=2) {
                 if (varNameValidation(parts[1])) {/*
                     Check the name of new variable not to be repeated and if it matches java format of variable name declaration
                  */
@@ -181,8 +181,8 @@ public class LineReader {
             }
             String[] parts = line.trim().split("[ ]+");
             Statement command = null;
-            StringBuilder forCommand = new StringBuilder("");//Statements.For storing each 'for' block
-            StringBuilder ifCommand = new StringBuilder("");//Statements.For storing each 'if' block
+            StringBuilder forCommand = new StringBuilder("");//For storing each 'for' block
+            StringBuilder ifCommand = new StringBuilder("");//For storing each 'if' block
             int lineNumber = this.LineFinder(line);//getting the number of line
             switch (parts[0]) {
                 case "print": {
@@ -277,7 +277,7 @@ public class LineReader {
 
                 default: {
                     if (Variables.Numbers.getVariables().containsKey(parts[0])) {
-                        /*Statements.Assignment statement*/
+                        /*Assignment statement*/
                         if (parts[1].equals("=")) {
                             if (parts.length == 5) {
                                 command = (new Assignment(parts[0], parts[2], parts[3], parts[4], lineNumber));

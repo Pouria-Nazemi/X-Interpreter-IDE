@@ -57,7 +57,7 @@ public class Assignment extends Statement {
             calculateNeed = calculate.getCalcIns();
             this.setOutcome(this.calculateNeed.run());
         }
-        Variables.Numbers.changeVariableValue(this.getAssignVariableName(), this.getOutcome(),super.getLineNumber()); // Statements.For assigning the result into the variable
+        Variables.Numbers.changeVariableValue(this.getAssignVariableName(), this.getOutcome(),super.getLineNumber()); // For assigning the result into the variable
         
         return this.getOutcome(); //recursive amount of this statement
     }
