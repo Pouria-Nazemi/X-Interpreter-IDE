@@ -115,44 +115,48 @@ public class LineReader {
             }
 
             String[] parts = line.trim().split("[ ]+");
-
-            if (varNameValidation(parts[1])) {/*
+            if(parts.length>=1) {
+                if (varNameValidation(parts[1])) {/*
                     Check the name of new variable not to be repeated and if it matches java format of variable name declaration
                  */
-                if (parts[0].equals("int")) { //Integer declaration
-                    if (parts.length == 4 && parts[2].equals("=")) { //example pattern: int x = 15
-                        try {
-                            int value = Integer.parseInt(parts[3]);
-                            IntVar var = new IntVar(parts[1], value, lineNumber);
-                        } catch (NumberFormatException ex) {
-                            throw new InterpretingLineException("The value you entered cannot be assigned to an Integer variable" , lineNumber);
-                        }
+                    if (parts[0].equals("int")) { //Integer declaration
+                        if (parts.length == 4 && parts[2].equals("=")) { //example pattern: int x = 15
+                            try {
+                                int value = Integer.parseInt(parts[3]);
+                                IntVar var = new IntVar(parts[1], value, lineNumber);
+                            } catch (NumberFormatException ex) {
+                                throw new InterpretingLineException("The value you entered cannot be assigned to an Integer variable", lineNumber);
+                            }
 
-                    } else if (parts.length == 2) {//example pattern: int x
-                        IntVar var = new IntVar(parts[1], lineNumber);
-                    } else {
-                        throw new InterpretingLineException("Wrong format of int declaration." , lineNumber);
-                    }
-                } else if (parts[0].equals("float")) {//Float declaration
-
-                    if (parts.length == 4 && parts[2].equals("=")) {//example pattern: float x = 15.00
-                        try {
-                            float value = Float.parseFloat(parts[3]);
-                            FloatVar var = new FloatVar(parts[1], value, lineNumber);
-                        } catch (NumberFormatException ex) {
-                            throw new InterpretingLineException("The value you entered cannot be assigned to a float variable",lineNumber);
+                        } else if (parts.length == 2) {//example pattern: int x
+                            IntVar var = new IntVar(parts[1], lineNumber);
+                        } else {
+                            throw new InterpretingLineException("Wrong format of int declaration.", lineNumber);
                         }
-                    } else if (parts.length == 2) {//example pattern: float x 
-                        FloatVar var = new FloatVar(parts[1], lineNumber);
+                    } else if (parts[0].equals("float")) {//Float declaration
+
+                        if (parts.length == 4 && parts[2].equals("=")) {//example pattern: float x = 15.00
+                            try {
+                                float value = Float.parseFloat(parts[3]);
+                                FloatVar var = new FloatVar(parts[1], value, lineNumber);
+                            } catch (NumberFormatException ex) {
+                                throw new InterpretingLineException("The value you entered cannot be assigned to a float variable", lineNumber);
+                            }
+                        } else if (parts.length == 2) {//example pattern: float x
+                            FloatVar var = new FloatVar(parts[1], lineNumber);
+                        } else {
+                            throw new InterpretingLineException("Wrong format of float declaration ", lineNumber);
+                        }
                     } else {
-                        throw new InterpretingLineException("Wrong format of float declaration " , lineNumber);
+                        throw new InterpretingLineException("Wrong format of variable declaration ", lineNumber);
                     }
                 } else {
-                    throw new InterpretingLineException("Wrong format of variable declaration " , lineNumber);
-                }
-            } else {
-                throw new InterpretingLineException("Name of the variable is not accepted " , lineNumber);
+                    throw new InterpretingLineException("Name of the variable is not accepted ", lineNumber);
 
+                }
+            }
+            else {
+                throw new InterpretingLineException("Wrong format of variable declaration ", lineNumber);
             }
         }
     }
