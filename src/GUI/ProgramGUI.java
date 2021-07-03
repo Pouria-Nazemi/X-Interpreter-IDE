@@ -242,8 +242,6 @@ public class ProgramGUI {
                 if(!errorMessage.equals("")) {
                     try {
                         int lineNumber = getLineNumber(viewToModel(event.getPoint()));
-                    /*if(tooltipMessages.containsKey(lineNumber))
-                        return tooltipMessages.get(lineNumber);*/
                         if (lineNumber == errorLine)
                             return errorMessage;
                     } catch (BadLocationException e) {
@@ -317,31 +315,32 @@ public class ProgramGUI {
     private static void createChatBox(JFrame frame){
         JPanel chatPanel=new JPanel(new BorderLayout());
         chatPanel.setVisible(false);
-        //chatPanel.setLayout(new BoxLayout(chatPanel,BoxLayout.Y_AXIS));
-
         chatBox= new JTextArea();
         chatBox.setEditable(false);
         chatBox.setBackground(new Color(231, 231, 231));
         chatBox.setLineWrap(true);
-        //textArea.setSize(150,300);
         JScrollPane scrollPane=new JScrollPane(chatBox);
         scrollPane.setPreferredSize(new Dimension(150,400));
-        //scrollPane.setLocation(0,0);
-        //scrollPane.setBounds(0,0,150,300);
-        ///     chatPanel.add(scrollPane,BorderLayout.NORTH);
         chatPanel.add(scrollPane,BorderLayout.CENTER);
         JTextField inputField=new JTextField(10);
         JPanel inputPanel=new JPanel(new BorderLayout());
-        //inputField.setSize(140,30);
         inputPanel.add(inputField,BorderLayout.NORTH);
         JButton button=new JButton("Send");
         button.addActionListener(e -> {
-            client.message(inputField.getText());
-            inputField.setText("");
+            if(!inputField.getText().equals("")) {
+                client.message(inputField.getText());
+                inputField.setText("");
+            }
         });
-        //button.setBounds(0,350,150,200);
         button.setBorder(new EmptyBorder(10,50,10,50));
         inputPanel.add(button,BorderLayout.CENTER);
+        inputField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(!inputField.getText().equals("") && e.getKeyCode()==KeyEvent.VK_ENTER)
+                    button.doClick();
+            }
+        });
         Image hideImg=new ImageIcon("images/messages-hide.png").getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH);
         JButton hideButton=new JButton(new ImageIcon(hideImg));
         hideButton.setBorder(new EmptyBorder(0,5,0,5));
@@ -370,14 +369,16 @@ public class ProgramGUI {
     }
 
     public static void addMessage(String name,String message){
-        //Style bold = StyleContext.getDefaultStyleContext().getStyle("bold");
-        if(name.equals(client.getId()))
-            name="You";
-        else
-            name="client "+ name;
-
-        /*String text=String.format("<html><h3>Client%s</h3>: %s<br></html>",name,message);*/
-        String text=String.format("%s: %s\n\n",name,message);
+        String text="";
+        if (name.equals("Server")){
+           text= String.format("💬 %s ❗\n\n",message);
+        }else {
+            if (name.equals(client.getId()))
+                name = "You";
+            else
+                name = "client " + name;
+            text = String.format("%s: %s\n\n", name, message);
+        }
         chatBox.append(text);
     }
 
@@ -832,6 +833,11 @@ public class ProgramGUI {
 
     }
 
+    public static boolean requestControl(String id){
+        int confirm= JOptionPane.showConfirmDialog(textBox,"Client "+ id+" request control. do you accept it?","Request Control",JOptionPane.YES_NO_OPTION);
+        return confirm== JOptionPane.YES_OPTION;
+    }
+
     public static void changeTeamRole(){
         Image controller=new ImageIcon("images/team-controller.png").getImage().getScaledInstance(30,30,Image.SCALE_SMOOTH);
         Image member=new ImageIcon("images/team-enable.png").getImage().getScaledInstance(30,30,Image.SCALE_SMOOTH);
@@ -844,6 +850,8 @@ public class ProgramGUI {
         }else{
             textBox.setEditable(true);
             ((JButton)jPanel.getComponent(8)).setIcon(new ImageIcon(controller));
+            if (clientListener!=null)
+                JOptionPane.showMessageDialog(textBox,"You are now the controller");
             clientListener=new ClientListener(client);
             textBox.getDocument().addDocumentListener(clientListener);
         }
