@@ -168,7 +168,8 @@ public class LineReader {
     }
     private boolean varNameValidation(String name){
         if(!Variables.Numbers.getVariables().containsKey(name) && name.matches("([a-zA-Z$][\\w$]*|[_][\\w$]+)")
-        && !name.equals("for") &&!name.equals("if")&&!name.equals("print")&&!name.equals("end")){
+        && !name.equals("for") &&!name.equals("if")&&!name.equals("print")&&!name.equals("end")&&!name.equals("int")
+                && !name.equals("float")){
             return true;
         }
         else{
@@ -183,7 +184,7 @@ public class LineReader {
                 continue;
             }
             if (line.trim().startsWith("//")) { //Skipping comments in code
-                line = code.nextLine();
+                continue;
             }
             String[] parts = line.trim().split("[ ]+");
             Statement command = null;
@@ -206,7 +207,7 @@ public class LineReader {
                         this.getCommands().add(this.getIfForNum(), new ArrayList<Statement>());
                         this.getCommands().get(this.getIfForNum()).add(new For(parts[1], lineNumber));
                         int i = 1; //for finding the correct end for command
-                        while (code.hasNextLine()) {//Command Block Of Statements.For
+                        while (code.hasNextLine()) {//Command Block Of For
                             String lines = code.nextLine();
                             lines = lines.trim();
                             if(lines.length()==0){

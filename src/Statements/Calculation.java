@@ -61,7 +61,7 @@ public class Calculation extends Statement {
     }
 
     @Override
-    public  Number run() {//TODO it won`t be used
+    public  Number run() {
         return null;
     }
 }

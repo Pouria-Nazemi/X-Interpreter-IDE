@@ -24,11 +24,10 @@ public class Client {
     private String id;
     public Client(Document document,String roomKey) throws IOException {
             textBox=document;
-            socket = new Socket("127.0.0.1", 14004);
+            socket = new Socket("localhost", 14004);
             input = new Scanner(socket.getInputStream());
             id= input.nextLine();
             input.useDelimiter(DELIMITER);
-            System.out.println("id= " + id);
             output = new PrintWriter(
                        new BufferedWriter(
                             new OutputStreamWriter(
@@ -40,15 +39,17 @@ public class Client {
     }
 
     public void recognize(String data){
-        Matcher matcher= Pattern.compile("(request|accept|insert|delete|getText|setText|message)[|](\\d+)[|] (.+)",Pattern.DOTALL).matcher(data);
+        Matcher matcher= Pattern.compile("(request|accept|insert|delete|getText|setText|message)[|](\\w+)[|] (.+)",Pattern.DOTALL).matcher(data);
         if(matcher.find()){
             switch (matcher.group(1)){
                 case "request":
-                    output.format("%s |accept|%s| .%s",
-                            roomKey,
-                            matcher.group(2),
-                            DELIMITER);
-                    ProgramGUI.changeTeamRole();
+                    if(ProgramGUI.requestControl(matcher.group(2))) {
+                        output.format("%s |accept|%s| .%s",
+                                roomKey,
+                                matcher.group(2),
+                                DELIMITER);
+                        ProgramGUI.changeTeamRole();
+                    }
                     break;
                 case "accept":
                     ProgramGUI.changeTeamRole();
@@ -165,7 +166,6 @@ class ClientThread extends Thread{
         while(client.isAlive()){
             if(client.getInput().hasNext()) {
                 String text = client.getInput().next();
-                System.out.println(text);
                 client.recognize(text);
             }
         }
