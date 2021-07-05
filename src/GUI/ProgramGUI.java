@@ -246,7 +246,6 @@ public class ProgramGUI {
                             return errorMessage;
                     } catch (BadLocationException e) {
                         e.printStackTrace();
-                        e.printStackTrace();
                     }
                 }
 
@@ -581,49 +580,53 @@ public class ProgramGUI {
 
     private static void createStyles(){
         StyleContext styleContext = StyleContext.getDefaultStyleContext();
-        final Style blackStyle = styleContext.addStyle("default", null);
+        Style blackStyle = styleContext.addStyle("default", null);
         blackStyle.addAttribute(StyleConstants.Foreground, Color.BLACK);
         blackStyle.addAttribute(StyleConstants.FontSize,15);
         blackStyle.addAttribute(StyleConstants.FontFamily,"Dialog");
         blackStyle.addAttribute(StyleConstants.Bold, new Boolean(false));
 
 
-        final Style boldStyle = styleContext.addStyle("bold", null);
+        Style boldStyle = styleContext.addStyle("bold", null);
         boldStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style errorStyle = styleContext.addStyle("error", null);
+        Style errorStyle = styleContext.addStyle("error", null);
         errorStyle.addAttribute(StyleConstants.Background, Color.red);
         styleContext.addStyle("noError", null).addAttribute(StyleConstants.Background, Color.white);;
 
-        final Style forstyle = styleContext.addStyle("for", null);
+        Style forstyle = styleContext.addStyle("for", null);
         forstyle.addAttribute(StyleConstants.Italic, new Boolean(true));
         forstyle.addAttribute(StyleConstants.FirstLineIndent,new Float(7));
 
-        final Style intStyle = styleContext.addStyle("int", null);
+        Style commentStyle = styleContext.addStyle("//", null);
+        commentStyle.addAttribute(StyleConstants.Foreground, Color.GRAY);
+        commentStyle.addAttribute(StyleConstants.Bold, new Boolean(false));
+
+        Style intStyle = styleContext.addStyle("int", null);
         intStyle.addAttribute(StyleConstants.Foreground, Color.blue);
         intStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style floatStyle = styleContext.addStyle("float", null);
+        Style floatStyle = styleContext.addStyle("float", null);
         floatStyle.addAttribute(StyleConstants.Foreground, new Color(1, 7, 164));
         floatStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style forStyle = styleContext.addStyle("for", null);
+        Style forStyle = styleContext.addStyle("for", null);
         forStyle.addAttribute(StyleConstants.Foreground, new Color(6, 91, 1));
         forStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style ifStyle = styleContext.addStyle("if", null);
+        Style ifStyle = styleContext.addStyle("if", null);
         ifStyle.addAttribute(StyleConstants.Foreground, new Color(9, 131, 99));
         ifStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style operatorStyle = styleContext.addStyle("operator", null);
+        Style operatorStyle = styleContext.addStyle("operator", null);
         operatorStyle.addAttribute(StyleConstants.Foreground, new Color(119, 0, 0));
         operatorStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style printStyle = styleContext.addStyle("print", null);
+        Style printStyle = styleContext.addStyle("print", null);
         printStyle.addAttribute(StyleConstants.Foreground, new Color(177, 133, 2));
         printStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
 
-        final Style separatorStyle = styleContext.addStyle("%%", null);
+        Style separatorStyle = styleContext.addStyle("%%", null);
         separatorStyle.addAttribute(StyleConstants.Foreground, new Color(0, 176, 255));
         separatorStyle.addAttribute(StyleConstants.Bold, new Boolean(true));
     }
@@ -637,7 +640,7 @@ public class ProgramGUI {
         styledDocument.setCharacterAttributes(0, textBox.getText().length(), styleContext.getStyle("default"), false);
         styledDocument.setParagraphAttributes(0, textBox.getText().length(), styleContext.getStyle("default"), true);
 
-        Pattern pattern=Pattern.compile("\\bint\\b|\\bfloat\\b|\\bfor\\b|end for|\\bif\\b|end if|\\bprint\\b|[=+-/]|[*]|%%");
+        Pattern pattern=Pattern.compile("\\bint\\b|\\bfloat\\b|\\bfor\\b|end for|\\bif\\b|end if|\\bprint\\b|[/][/]|[=+-/]|[*]|%%");
 
 
         // Look for tokens and highlight them
@@ -657,6 +660,7 @@ public class ProgramGUI {
         }
 
         indent();
+        styleComments();
     }
 
 
@@ -674,15 +678,26 @@ public class ProgramGUI {
         int lineNumber=0;
         while (scn.hasNext()){
             String line= scn.nextLine().trim();
-            if(line.equals("end for") || line.equals("end if"))
+            if(line.matches("end[ ]+for|end[ ]+if"))
                 space-=12;
             style.addAttribute(StyleConstants.FirstLineIndent, new Float(space));
             textBox.getStyledDocument().setParagraphAttributes(offset+lineNumber,line.length(),style, true);
             if (line.matches("for .+|if .+"))
                 space+=12;
-
             lineNumber++;
             offset+=line.length();
+        }
+    }
+    private static void styleComments() throws BadLocationException {
+        int start=textBox.getText().indexOf("//");
+        StyleContext styleContext = StyleContext.getDefaultStyleContext();
+        while (start!=-1) {
+            int end = textBox.getText().indexOf("\n", start);
+            if (end==-1) end=textBox.getText().length();
+            int lineNumber= getLineNumber(start);
+            String line =textBox.getText().substring(start,end);
+            textBox.getStyledDocument().setCharacterAttributes(start-lineNumber ,line.length(), styleContext.getStyle("//"), false);
+            start=textBox.getText().indexOf("//",end);
         }
     }
 
@@ -712,7 +727,6 @@ public class ProgramGUI {
         String message=String.format("an error at line %d:\n%s",lineNumber,error);
         JOptionPane.showMessageDialog(null,message,"build failed",JOptionPane.ERROR_MESSAGE);
         styledDocument.setCharacterAttributes(start-lineNumber,end-start,styleContext.getStyle("error"),false);
-        // tooltipMessages.put(lineNumber,error);
         errorLine=lineNumber;
         errorMessage=error;
     }
@@ -776,7 +790,6 @@ public class ProgramGUI {
                 menuItem.setIcon(UIManager.getIcon("Menu.arrowIcon"));
             else
                 menuItem.setIcon(UIManager.getIcon("Tree.leafIcon"));
-            // menuItem.setFont(menuItem.getFont().deriveFont(Font.BOLD));
             popupMenu.add(menuItem);
             menuItem.addMenuKeyListener(new MenuKeyListener() {
                 @Override
